@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Эко-игра: Сортировка мусора</title>
+    <link rel="stylesheet" href="sorting/styles.css">
+</head>
+<body>
+    <div class="container" id="game">
+        <div id="welcome" class="welcome">
+            <h1 class="title">Эко-игра: Сортировка мусора</h1>
+            <div class="welcome-text">
+                <p class="main-desc">
+                    Правильная сортировка мусора - это важный навык в современном мире. 
+                    Играя в эту игру, вы научитесь автоматически определять, куда выбрасывать 
+                    различные виды отходов, что сделает ваш вклад в защиту окружающей среды 
+                    более эффективным.
+                </p>
+                <div class="benefits">
+                    <p>🌍 Помогает выработать полезную привычку</p>
+                    <p>🧠 Тренирует память и скорость принятия решений</p>
+                    <p>♻️ Учит правильно сортировать более 60 видов отходов</p>
+                    <p>🌱 Вносит вклад в сохранение природы</p>
+                </div>
+            </div>
+            <div class="game-modes">
+                <button class="btn btn-mode" onclick="startGame('classic')">
+                    <span class="mode-title">Классический</span>
+                    <span class="mode-desc">Играйте в своем темпе, без ограничений</span>
+                </button>
+                <button class="btn btn-mode" onclick="startGame('time')">
+                    <span class="mode-title">На время</span>
+                    <span class="mode-desc">У вас есть 60 секунд</span>
+                </button>
+                <button class="btn btn-mode" onclick="startGame('survival')">
+                    <span class="mode-title">Выживание</span>
+                    <span class="mode-desc">Игра до первой ошибки</span>
+                </button>
+                <button class="btn-back" style="margin-top: 20px; display: flex; justify-content: center;" onclick="window.location.href='index.html'">Вернуться в меню</button> 
+            </div>
+        </div>
+
+        <div id="gameContent" style="display: none;">
+            <div class="game-header">
+                <button class="btn-back back" onclick="goBack()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Назад
+                </button>
+                <h1 class="title">Эко-игра: Сортировка мусора</h1>
+            </div>
+
+            <div class="stats">
+                <div>Счёт: <span id="score">0</span></div>
+                <div>Серия: <span id="streak">0</span></div>
+                <div>Отсортировано: <span id="sorted">0</span></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-hint" onclick="showHint()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12" y2="17"></line>
+                    </svg>
+                    Подсказка
+                </button>
+                <button class="btn btn-dict" onclick="toggleDictionary()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    Справочник
+                </button>
+            </div>
+
+            <div id="currentItem" class="current-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+                <span id="itemName"></span>
+                <p id="itemHint" style="display: none;" class="hint"></p>
+            </div>
+
+            <p id="feedback" class="feedback"></p>
+
+            <div class="bins">
+                <button class="bin bin-recycling" onclick="handleDrop('recycling')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Переработка
+                </button>
+                <button class="bin bin-organic" onclick="handleDrop('organic')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Органика
+                </button>
+                <button class="bin bin-hazardous" style="margin-bottom: 50px;" onclick="handleDrop('hazardous')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect>
+                        <line x1="23" y1="13" x2="23" y2="11"></line>
+                    </svg>
+                    Опасные отходы
+                </button>
+            </div>
+        </div>
+        <div id="dictionary" class="dictionary">
+            <div class="dictionary-content">
+                <button class="btn-close-dict" onclick="toggleDictionary()" aria-label="Закрыть справочник">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <h2>Справочник по сортировке отходов</h2>
+                <div id="dictionaryContent"></div>
+            </div>
+        </div>
+    </div>
+    <script src="sorting/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экологическое Приключение</title>
+    <link rel="stylesheet" href="quest/css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Главная страница -->
+        <div id="main-screen" class="screen">
+            <h1>Экологическое Приключение</h1>
+            <p>Спасите остров от загрязнения!</p>
+            <button onclick="startGame()">Начать игру</button>
+            <button class="btn-back" style="margin-top: 10px; display: flex; justify-content: center;" onclick="window.location.href='index.html'">Вернуться в меню</button> 
+        </div>
+        
+        <!-- Этап 1: Загрязнение пляжа -->
+        <div id="stage1" class="screen hidden">
+            <h1>Загрязнение Пляжа</h1>
+            <img src="quest/image/1b.png" alt="Загрязнённый пляж">
+            <p>Пляжи покрыты пластиковыми отходами. Что вы будете делать?</p>
+            <button onclick="chooseOption(1)">Организовать уборку пляжа</button>
+            <button onclick="chooseOption(2)">Ввести запрет на пластик</button>
+            <button onclick="chooseOption(3)">Ничего не делать</button>
+        </div>
+
+        <!-- Этап 2: Браконьерство -->
+        <div id="stage2" class="screen hidden">
+            <h1>Браконьерство</h1>
+            <img src="quest/image/2t.png" alt="Браконьерство">
+            <p>Вы обнаружили браконьеров, охотящихся на черепах. Как поступите?</p>
+            <button onclick="chooseOption(1)">Договориться с браконьерами</button>
+            <button onclick="chooseOption(2)">Сообщить властям</button>
+            <button onclick="chooseOption(3)">Не вмешиваться</button>
+        </div>
+
+        <!-- Этап 3: Вырубка леса -->
+        <div id="stage3" class="screen hidden">
+            <h1>Вырубка Леса</h1>
+            <img src="quest/image/3f.png" alt="Вырубка леса">
+            <p>Лес вырубают для строительства отеля. Что вы сделаете?</p>
+            <button onclick="chooseOption(1)">Организовать акцию протеста</button>
+            <button onclick="chooseOption(2)">Предложить экологичные материалы</button>
+            <button onclick="chooseOption(3)">Поддержать строительство</button>
+        </div>
+
+        <!-- Этап 4: Загрязнение реки -->
+        <div id="stage4" class="screen hidden">
+            <h1>Загрязнение Реки</h1>
+            <img src="quest/image/4f.png" alt="Загрязнение реки">
+            <p>Река загрязнена химическими отходами. Как поступите?</p>
+            <button onclick="chooseOption(1)">Организовать очистку реки</button>
+            <button onclick="chooseOption(2)">Ужесточить контроль за заводами</button>
+            <button onclick="chooseOption(3)">Игнорировать проблему</button>
+        </div>
+
+        <!-- Этап 5: Уничтожение горных экосистем -->
+        <div id="stage5" class="screen hidden">
+            <h1>Уничтожение Гор</h1>
+            <img src="quest/image/5d.jpg" alt="Уничтожение гор">
+            <p>Горы разрушают для добычи полезных ископаемых. Что вы сделаете?</p>
+            <button onclick="chooseOption(1)">Организовать кампанию по защите</button>
+            <button onclick="chooseOption(2)">Предложить альтернативные источники</button>
+            <button onclick="chooseOption(3)">Поддержать добычу</button>
+        </div>
+
+        <!-- Экран с фактом -->
+        <div id="fact-screen" class="screen hidden">
+            <h1>Научный Факт</h1>
+            <p id="fact-text"></p>
+            <button onclick="continueGame()">Продолжить</button>
+        </div>
+
+        <!-- Итоговая сцена -->
+        <div id="end-screen" class="screen hidden">
+            <h1>Итог</h1>
+            <p id="end-message"></p>
+            <img id="end-image" src="" alt="Итоговая сцена">
+            <button onclick="restartGame()">Играть снова</button>
+        </div>
+    </div>
+
+    <script src="quest/js/script.js"></script>
+</body>
+</html>
