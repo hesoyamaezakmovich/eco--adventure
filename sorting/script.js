@@ -91,14 +91,142 @@ let gameState = {
     mistakesCount: 0,
     comboMultiplier: 1,
     lastCorrectBin: null,
-    penaltyTimeout: null
+    penaltyTimeout: null,
+    usedItems: new Set(),
+    mistakeItems: new Set(),
+    currentItemsList: [], 
+    currentIndex: 0 
 };
+
+
+function handleDrop(binType) {
+    if (!gameState.currentItem || gameState.isGameOver || gameState.isProcessing) return;
+
+    gameState.isProcessing = true;
+    gameState.itemsSorted++;
+    const isCorrect = gameState.currentItem.type === binType;
+
+    if (isCorrect) {
+        if (gameState.lastCorrectBin === binType) {
+            gameState.comboMultiplier = Math.max(0.5, gameState.comboMultiplier - 0.2);
+        } else {
+            gameState.comboMultiplier = Math.min(3, gameState.comboMultiplier + 0.5);
+        }
+        
+        const pointsEarned = Math.ceil(gameState.comboMultiplier);
+        gameState.score += pointsEarned;
+        gameState.perfectStreak++;
+        gameState.lastCorrectBin = binType;
+        
+        showFeedback(`Правильно! +${pointsEarned} ${getComboMessage(gameState.comboMultiplier)}`, true);
+    } else {
+        // Добавляем предмет в список ошибок
+        gameState.mistakeItems.add(gameState.currentItem);
+        
+        gameState.mistakesCount++;
+        gameState.perfectStreak = 0;
+        gameState.comboMultiplier = 1;
+        gameState.lastCorrectBin = null;
+
+        if (gameState.mistakesCount >= 3) {
+            applyPenalty();
+        }
+
+        showFeedback('Неправильно! Попробуйте еще раз', false);
+
+        if (gameState.mode === 'survival') {
+            endGame('Игра окончена! Неправильная сортировка.');
+            return;
+        }
+    }
+
+    updateStats();
+
+    setTimeout(() => {
+        gameState.isProcessing = false;
+        generateNewItem();
+    }, 1500);
+}
+
+function generateNewItem() {
+    if (gameState.isGameOver) return;
+
+    // Если текущий список пуст или закончился
+    if (gameState.currentItemsList.length === 0 || 
+        gameState.currentIndex >= gameState.currentItemsList.length) {
+        
+        // Сначала добавляем предметы с ошибками, если они есть
+        let newList = [...gameState.mistakeItems];
+        gameState.mistakeItems.clear();
+        
+        // Если все предметы были использованы или это первый запуск
+        if (gameState.usedItems.size >= Object.values(wasteDatabase)
+            .reduce((sum, cat) => sum + cat.items.length, 0) || 
+            gameState.usedItems.size === 0) {
+            
+            // Очищаем историю использованных предметов и начинаем новый цикл
+            gameState.usedItems.clear();
+            newList.push(...generateItemsList());
+        } else {
+            // Добавляем только неиспользованные предметы
+            const remainingItems = generateItemsList().filter(item => 
+                !gameState.usedItems.has(item.id)
+            );
+            newList.push(...remainingItems);
+        }
+        
+        // Перемешиваем финальный список еще раз для большей случайности
+        gameState.currentItemsList = newList.sort(() => Math.random() - 0.5);
+        gameState.currentIndex = 0;
+    }
+
+    gameState.currentItem = gameState.currentItemsList[gameState.currentIndex];
+    gameState.usedItems.add(gameState.currentItem.id);
+    gameState.currentIndex++;
+
+    const currentItemElement = document.getElementById('currentItem');
+    currentItemElement.innerHTML = `
+        <span style="font-size: 2em; margin-right: 10px;">${gameState.currentItem.icon}</span>
+        <span>${gameState.currentItem.name}</span>
+        <p id="itemHint" style="display: none;" class="hint"></p>
+    `;
+}
+
+function generateItemsList() {
+    let allItems = [];
+    Object.entries(wasteDatabase).forEach(([category, data]) => {
+        data.items.forEach(item => {
+            allItems.push({
+                ...item,
+                type: category
+            });
+        });
+    });
+    
+    return allItems.sort(() => Math.random() - 0.5);
+}
 
 // Функция начала игры
 function startGame(mode) {
     gameState.mode = mode;
     document.getElementById('welcome').style.display = 'none';
     document.getElementById('gameContent').style.display = 'block';
+    
+    // Управление видимостью кнопок подсказок в зависимости от режима
+    const hintButton = document.querySelector('.btn-hint');
+    const dictButton = document.querySelector('.btn-dict');
+    
+    if (mode === 'time' || mode === 'survival') {
+        hintButton.style.display = 'none';
+    } else {
+        hintButton.style.display = 'block';
+    }
+    
+    if (mode === 'survival') {
+        dictButton.style.display = 'none';
+    } else {
+        dictButton.style.display = 'block';
+    }
     
     if (mode === 'time') {
         const statsDiv = document.querySelector('.stats');
@@ -130,41 +258,27 @@ function startTimer() {
 
 // Сброс игры
 function resetGame() {
-    gameState.score = 0;
-    gameState.perfectStreak = 0;
-    gameState.itemsSorted = 0;
-    gameState.currentItem = null;
-    gameState.isGameOver = false;
-    gameState.isProcessing = false;
-    gameState.mistakesCount = 0;
-    gameState.comboMultiplier = 1;
-    gameState.lastCorrectBin = null;
+    gameState = {
+        ...gameState,
+        score: 0,
+        perfectStreak: 0,
+        itemsSorted: 0,
+        currentItem: null,
+        isGameOver: false,
+        isProcessing: false,
+        mistakesCount: 0,
+        comboMultiplier: 1,
+        lastCorrectBin: null,
+        usedItems: new Set(),
+        mistakeItems: new Set(),
+        currentItemsList: [],
+        currentIndex: 0
+    };
+    
     if (gameState.penaltyTimeout) {
         clearTimeout(gameState.penaltyTimeout);
     }
     updateStats();
-}
-
-// Генерация нового предмета
-function generateNewItem() {
-    if (gameState.isGameOver) return;
-
-    const categories = Object.keys(wasteDatabase);
-    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-    const categoryItems = wasteDatabase[randomCategory].items;
-    const randomItem = categoryItems[Math.floor(Math.random() * categoryItems.length)];
-    
-    gameState.currentItem = {
-        ...randomItem,
-        type: randomCategory
-    };
-
-    const currentItemElement = document.getElementById('currentItem');
-    currentItemElement.innerHTML = `
-        <span style="font-size: 2em; margin-right: 10px;">${randomItem.icon}</span>
-        <span>${randomItem.name}</span>
-        <p id="itemHint" style="display: none;" class="hint"></p>
-    `;
 }
 
 // Показать подсказку
@@ -178,12 +292,9 @@ function showHint() {
 
 // Обработка броска предмета в контейнер
 function handleDrop(binType) {
-    if (!gameState.currentItem || 
-        gameState.isGameOver || 
-        gameState.isProcessing) return;
+    if (!gameState.currentItem || gameState.isGameOver || gameState.isProcessing) return;
 
     gameState.isProcessing = true;
-
     gameState.itemsSorted++;
     const isCorrect = gameState.currentItem.type === binType;
 
@@ -201,6 +312,9 @@ function handleDrop(binType) {
         
         showFeedback(`Правильно! +${pointsEarned} ${getComboMessage(gameState.comboMultiplier)}`, true);
     } else {
+        // Добавляем предмет в список ошибок
+        gameState.mistakeItems.add(gameState.currentItem);
+        
         gameState.mistakesCount++;
         gameState.perfectStreak = 0;
         gameState.comboMultiplier = 1;
