@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Угадай Углеродный След</title>
+    <link rel="stylesheet" href="carbon/css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Главная страница -->
+        <div id="welcome-screen" class="screen">
+            <h1>⚖️ Угадай Углеродный След</h1>
+            <p class="welcome-text">Сравните действия и выберите, что производит больший углеродный след!</p>
+            <div class="info-box">
+                <h3>Что такое углеродный след?</h3>
+                <p>Углеродный след — это количество парниковых газов (в основном CO₂), которые выделяются в атмосферу в результате наших действий.</p>
+            </div>
+            <div class="game-features">
+                <div class="feature">
+                    <span class="emoji">🌍</span>
+                    <p>20 сравнений</p>
+                </div>
+                <div class="feature">
+                    <span class="emoji">📊</span>
+                    <p>Реальные данные</p>
+                </div>
+                <div class="feature">
+                    <span class="emoji">💡</span>
+                    <p>Полезные факты</p>
+                </div>
+            </div>
+            <button class="btn-start" onclick="startGame()">Начать игру</button>
+            <button class="btn-back" onclick="window.location.href='index.html'">Вернуться в меню</button>
+        </div>
+
+        <!-- Игровой экран -->
+        <div id="game-screen" class="screen hidden">
+            <div class="game-header">
+                <button class="btn-exit" onclick="confirmExit()">✕</button>
+                <div class="progress-info">
+                    <p>Вопрос <span id="current-round">1</span> из <span id="total-rounds">20</span></p>
+                    <div class="progress-bar">
+                        <div id="progress" class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="question-title">Что производит больший углеродный след?</h2>
+
+            <div class="comparison-container">
+                <div class="option-card" id="option-a" onclick="selectOption(0)">
+                    <div class="option-icon">
+                        <span id="icon-a">🌱</span>
+                    </div>
+                    <h3 id="title-a">Вариант А</h3>
+                    <p id="desc-a">Описание</p>
+                </div>
+
+                <div class="vs-divider">VS</div>
+
+                <div class="option-card" id="option-b" onclick="selectOption(1)">
+                    <div class="option-icon">
+                        <span id="icon-b">🌱</span>
+                    </div>
+                    <h3 id="title-b">Вариант Б</h3>
+                    <p id="desc-b">Описание</p>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <p>Правильно: <span id="correct-count">0</span></p>
+                <p>Серия: <span id="streak">0</span></p>
+                <p>Очки: <span id="score">0</span></p>
+            </div>
+        </div>
+
+        <!-- Экран результата -->
+        <div id="result-screen" class="screen hidden">
+            <div class="result-header" id="result-header">
+                <h2 id="result-status">✅ Правильно!</h2>
+            </div>
+
+            <div class="carbon-comparison">
+                <div class="carbon-item">
+                    <p class="carbon-label" id="label-a"></p>
+                    <div class="carbon-bar">
+                        <div class="carbon-fill" id="bar-a"></div>
+                    </div>
+                    <p class="carbon-value" id="value-a"></p>
+                </div>
+
+                <div class="carbon-item">
+                    <p class="carbon-label" id="label-b"></p>
+                    <div class="carbon-bar">
+                        <div class="carbon-fill" id="bar-b"></div>
+                    </div>
+                    <p class="carbon-value" id="value-b"></p>
+                </div>
+            </div>
+
+            <div class="fact-box">
+                <h3>💡 Интересный факт</h3>
+                <p id="fact-text"></p>
+            </div>
+
+            <button class="btn-continue" onclick="nextRound()">Продолжить</button>
+        </div>
+
+        <!-- Финальный экран -->
+        <div id="final-screen" class="screen hidden">
+            <h1>🎉 Игра завершена!</h1>
+
+            <div class="final-stats">
+                <div class="stat-circle">
+                    <span id="final-percentage">0%</span>
+                    <p>Точность</p>
+                </div>
+                <div class="stat-details">
+                    <p>Правильных ответов: <span id="final-correct">0</span> из <span id="final-total">20</span></p>
+                    <p>Лучшая серия: <span id="final-streak">0</span></p>
+                    <p>Итоговый счёт: <span id="final-score">0</span></p>
+                </div>
+            </div>
+
+            <div class="achievement" id="achievement">
+                <h2 id="achievement-title"></h2>
+                <p id="achievement-text"></p>
+            </div>
+
+            <div class="final-buttons">
+                <button class="btn-restart" onclick="startGame()">Играть снова</button>
+                <button class="btn-back" onclick="window.location.href='index.html'">Вернуться в меню</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="carbon/js/script.js"></script>
+</body>
+</html>

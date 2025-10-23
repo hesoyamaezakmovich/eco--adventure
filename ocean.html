@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Собери Океан</title>
+    <link rel="stylesheet" href="ocean/css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Главная страница -->
+        <div id="welcome-screen" class="screen">
+            <h1>🌊 Собери Океан</h1>
+            <p class="welcome-text">Очистите океан от пластикового мусора и спасите морских обитателей!</p>
+
+            <div class="game-info">
+                <div class="info-card">
+                    <span class="info-icon">🎯</span>
+                    <h3>Цель игры</h3>
+                    <p>Собирайте пластиковый мусор, избегая морских животных</p>
+                </div>
+                <div class="info-card">
+                    <span class="info-icon">⏱️</span>
+                    <h3>Время</h3>
+                    <p>60 секунд на очистку океана</p>
+                </div>
+                <div class="info-card">
+                    <span class="info-icon">⭐</span>
+                    <h3>Очки</h3>
+                    <p>+10 за мусор, -20 за животных</p>
+                </div>
+            </div>
+
+            <div class="controls-info">
+                <h3>Управление</h3>
+                <p>🖱️ Используйте мышь или 👆 касание для сбора мусора</p>
+            </div>
+
+            <button class="btn-start" onclick="startGame()">Начать игру</button>
+            <button class="btn-back" onclick="window.location.href='index.html'">Вернуться в меню</button>
+        </div>
+
+        <!-- Игровой экран -->
+        <div id="game-screen" class="screen hidden">
+            <div class="game-header">
+                <div class="stat">
+                    <span class="stat-label">Счёт:</span>
+                    <span id="score" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Время:</span>
+                    <span id="time" class="stat-value">60</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Собрано:</span>
+                    <span id="collected" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <canvas id="game-canvas"></canvas>
+
+            <div class="game-footer">
+                <button class="btn-pause" onclick="togglePause()">⏸ Пауза</button>
+            </div>
+        </div>
+
+        <!-- Экран паузы -->
+        <div id="pause-screen" class="overlay hidden">
+            <div class="pause-content">
+                <h2>⏸ Пауза</h2>
+                <p>Игра приостановлена</p>
+                <button class="btn-continue" onclick="togglePause()">Продолжить</button>
+                <button class="btn-quit" onclick="quitGame()">Выйти в меню</button>
+            </div>
+        </div>
+
+        <!-- Финальный экран -->
+        <div id="final-screen" class="screen hidden">
+            <h1>🎉 Игра окончена!</h1>
+
+            <div class="final-stats">
+                <div class="stat-box">
+                    <span class="stat-icon">🏆</span>
+                    <p class="stat-title">Итоговый счёт</p>
+                    <p class="stat-number" id="final-score">0</p>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon">♻️</span>
+                    <p class="stat-title">Собрано мусора</p>
+                    <p class="stat-number" id="final-collected">0</p>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon">🐟</span>
+                    <p class="stat-title">Спасено животных</p>
+                    <p class="stat-number" id="final-saved">0</p>
+                </div>
+            </div>
+
+            <div class="achievement-box">
+                <h2 id="achievement-title"></h2>
+                <p id="achievement-text"></p>
+            </div>
+
+            <div class="eco-fact">
+                <h3>🌍 Экологический факт</h3>
+                <p id="eco-fact-text"></p>
+            </div>
+
+            <div class="final-buttons">
+                <button class="btn-restart" onclick="startGame()">Играть снова</button>
+                <button class="btn-back" onclick="window.location.href='index.html'">Вернуться в меню</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="ocean/js/script.js"></script>
+</body>
+</html>

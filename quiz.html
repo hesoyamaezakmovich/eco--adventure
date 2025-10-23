@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экологическая Викторина</title>
+    <link rel="stylesheet" href="quiz/css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Главная страница -->
+        <div id="welcome-screen" class="screen">
+            <h1>Экологическая Викторина</h1>
+            <p class="welcome-text">Проверьте свои знания об экологии и окружающей среде!</p>
+            <div class="stats-preview">
+                <p>15 вопросов</p>
+                <p>3 уровня сложности</p>
+                <p>Узнайте новые факты!</p>
+            </div>
+            <button class="btn-start" onclick="startQuiz()">Начать викторину</button>
+            <button class="btn-back" onclick="window.location.href='index.html'">Вернуться в меню</button>
+        </div>
+
+        <!-- Экран с вопросом -->
+        <div id="quiz-screen" class="screen hidden">
+            <div class="quiz-header">
+                <div class="progress-bar">
+                    <div id="progress" class="progress-fill"></div>
+                </div>
+                <p class="question-counter">Вопрос <span id="current-question">1</span> из <span id="total-questions">15</span></p>
+            </div>
+
+            <div class="question-container">
+                <h2 id="question-text" class="question-text"></h2>
+                <div id="answers-container" class="answers-container"></div>
+            </div>
+
+            <div class="quiz-stats">
+                <p>Правильных ответов: <span id="correct-count">0</span></p>
+                <p>Набранные очки: <span id="score">0</span></p>
+            </div>
+        </div>
+
+        <!-- Экран результата -->
+        <div id="result-screen" class="screen hidden">
+            <h1>Результаты</h1>
+            <div class="result-container">
+                <div class="result-circle">
+                    <span id="result-percentage">0%</span>
+                </div>
+                <h2 id="result-title"></h2>
+                <p id="result-message"></p>
+                <div class="final-stats">
+                    <p>Правильных ответов: <span id="final-correct">0</span> из <span id="final-total">15</span></p>
+                    <p>Итоговый счёт: <span id="final-score">0</span> очков</p>
+                </div>
+            </div>
+            <div class="result-buttons">
+                <button class="btn-restart" onclick="restartQuiz()">Пройти снова</button>
+                <button class="btn-back" onclick="window.location.href='index.html'">Вернуться в меню</button>
+            </div>
+        </div>
+
+        <!-- Экран с фактом -->
+        <div id="fact-screen" class="screen hidden">
+            <div class="fact-container">
+                <h2 id="fact-result"></h2>
+                <div class="fact-box">
+                    <h3>Интересный факт</h3>
+                    <p id="fact-text"></p>
+                </div>
+                <button class="btn-continue" onclick="nextQuestion()">Следующий вопрос</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="quiz/js/script.js"></script>
+</body>
+</html>
