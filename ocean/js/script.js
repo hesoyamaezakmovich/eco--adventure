@@ -134,25 +134,32 @@ function startGame() {
     particles = [];
     isPaused = false;
 
-    // Настройка canvas
-    canvas = document.getElementById('game-canvas');
-    ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
     // Показать игровой экран
     showScreen('game-screen');
 
-    // Обработчики событий
-    canvas.addEventListener('click', handleClick);
-    canvas.addEventListener('touchstart', handleTouch);
+    // Настройка canvas (нужно сделать после показа экрана)
+    setTimeout(() => {
+        canvas = document.getElementById('game-canvas');
+        ctx = canvas.getContext('2d');
 
-    // Обновить UI
-    updateUI();
+        // Установить правильные размеры canvas
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
 
-    // Запустить игру
-    startGameLoop();
-    startTimer();
+        // Обработчики событий
+        canvas.removeEventListener('click', handleClick);
+        canvas.removeEventListener('touchstart', handleTouch);
+        canvas.addEventListener('click', handleClick);
+        canvas.addEventListener('touchstart', handleTouch);
+
+        // Обновить UI
+        updateUI();
+
+        // Запустить игру
+        startGameLoop();
+        startTimer();
+    }, 100);
 }
 
 // Игровой цикл
@@ -281,8 +288,12 @@ function updateUI() {
 }
 
 // Таймер
+let timerInterval;
 function startTimer() {
-    const timerInterval = setInterval(() => {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    timerInterval = setInterval(() => {
         if (!isPaused) {
             gameTime--;
             updateUI();
@@ -304,13 +315,25 @@ function togglePause() {
 
 // Выход из игры
 function quitGame() {
-    clearInterval(gameLoop);
+    if (gameLoop) {
+        clearInterval(gameLoop);
+    }
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    isPaused = false;
+    document.getElementById('pause-screen').classList.add('hidden');
     showScreen('welcome-screen');
 }
 
 // Конец игры
 function endGame() {
-    clearInterval(gameLoop);
+    if (gameLoop) {
+        clearInterval(gameLoop);
+    }
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
 
     // Обновить финальную статистику
     document.getElementById('final-score').textContent = score;
@@ -353,8 +376,9 @@ function showScreen(screenId) {
 
 // Адаптация canvas при изменении размера
 window.addEventListener('resize', () => {
-    if (canvas) {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
+    if (canvas && ctx) {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
     }
 });
